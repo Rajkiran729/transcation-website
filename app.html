@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> my Transaction App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .app-container {
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            background-color: #40dae8;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #35cbcb;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .output {
+            background: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1><marquee>TRANSACTION WEBSITE</marquee></h1>
+        <img src="D:\images\atm.png"width="100" height="100">
+        <p>Select an action:</p>
+        <button onclick="createUser()">Create User</button>
+        <button onclick="deposit()">Deposit</button>
+        <button onclick="withdraw()">Withdraw</button>
+        <button onclick="transfer()">Transfer</button>
+        <button onclick="checkBalance()">Check Balance</button>
+        <button onclick="displayUsers()">Display Users</button>
+        <div id="output" class="output"></div>
+    </div>
+    <script>
+        let users = [];
+
+        function createUser() {
+            let username = prompt("Enter username:");
+            let initialDeposit = prompt("Enter initial deposit:");
+            let balance = parseFloat(initialDeposit);
+
+            if (username && !isNaN(balance) && balance >= 0) {
+                let user = {
+                    username: username,
+                    balance: balance
+                };
+                users.push(user);
+                document.getElementById('output').innerText = `User ${username} created with balance $${balance}.`;
+            } else {
+                document.getElementById('output').innerText = "Invalid input. Try again.";
+            }
+        }
+
+        function deposit() {
+            let username = prompt("Enter username to deposit:");
+            let user = users.find(u => u.username === username);
+
+            if (user) {
+                let amount = parseFloat(prompt("Enter deposit amount:"));
+                if (!isNaN(amount) && amount > 0) {
+                    user.balance += amount;
+                    document.getElementById('output').innerText = `Deposited $${amount} to ${username}. New balance: $${user.balance}.`;
+                } else {
+                    document.getElementById('output').innerText = "Invalid amount. Try again.";
+                }
+            } else {
+                document.getElementById('output').innerText = "User not found.";
+            }
+        }
+
+        function withdraw() {
+            let username = prompt("Enter username to withdraw from:");
+            let user = users.find(u => u.username === username);
+
+            if (user) {
+                let amount = parseFloat(prompt("Enter withdrawal amount:"));
+                if (!isNaN(amount) && amount > 0 && user.balance >= amount) {
+                    user.balance -= amount;
+                    document.getElementById('output').innerText = `Withdrew $${amount} from ${username}. New balance: $${user.balance}.`;
+                } else {
+                    document.getElementById('output').innerText = "Invalid amount or insufficient balance.";
+                }
+            } else {
+                document.getElementById('output').innerText = "User not found.";
+            }
+        }
+
+        function transfer() {
+            let fromUsername = prompt("Enter username to transfer from:");
+            let fromUser = users.find(u => u.username === fromUsername);
+
+            if (fromUser) {
+                let toUsername = prompt("Enter username to transfer to:");
+                let toUser = users.find(u => u.username === toUsername);
+
+                if (toUser) {
+                    let amount = parseFloat(prompt("Enter transfer amount:"));
+                    if (!isNaN(amount) && amount > 0 && fromUser.balance >= amount) {
+                        fromUser.balance -= amount;
+                        toUser.balance += amount;
+                        document.getElementById('output').innerText = `Transferred $${amount} from ${fromUsername} to ${toUsername}.`;
+                    } else {
+                        document.getElementById('output').innerText = "Invalid amount or insufficient balance.";
+                    }
+                } else {
+                    document.getElementById('output').innerText = "Recipient user not found.";
+                }
+            } else {
+                document.getElementById('output').innerText = "Sender user not found.";
+            }
+        }
+
+        function checkBalance() {
+            let username = prompt("Enter username to check balance:");
+            let user = users.find(u => u.username === username);
+
+            if (user) {
+                document.getElementById('output').innerText = `Balance of ${username}: $${user.balance}.`;
+            } else {
+                document.getElementById('output').innerText = "User not found.";
+            }
+        }
+
+        function displayUsers() {
+            if (users.length > 0) {
+                let userDetails = users.map(u => `Username: ${u.username}, Balance: $${u.balance}`).join("\n");
+                document.getElementById('output').innerText = userDetails;
+            } else {
+                document.getElementById('output').innerText = "No users to display.";
+            }
+        }
+    </script>
+           
+    
+</body>
+</html>
